@@ -46,7 +46,54 @@ body {
   transform: scale(0.95) rotate(0deg);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
+/* ----------------- Contenedor de categorías ----------------- */
+#filtros {
+  display: flex;
+  flex-wrap: wrap;            /* permite varias filas */
+  justify-content: center;    /* centra botones en cada fila */
+  gap: 0.75rem;               /* espacio entre botones */
+  max-width: 900px;           /* ancho máximo del contenedor */
+  margin: 0 auto;             /* centra contenedor en la página */
+}
 
+/* ----------------- Botones de Categorías ----------------- */
+#filtros .categoria-btn {
+  width: 160px;               /* ancho fijo */
+  height: 48px;               /* alto uniforme */
+  text-align: center;
+  line-height: 48px;          /* centra el texto verticalmente */
+  flex: none;                 /* evita que se estiren */
+  background: linear-gradient(to right, #f472b6, #ec4899);
+  color: white;
+  font-weight: 600;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+#filtros .categoria-btn:hover {
+  transform: scale(1.1) rotate(-2deg);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  filter: brightness(1.1);
+}
+
+#filtros .categoria-btn:active {
+  transform: scale(0.95) rotate(0deg);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+
+
+
+/* ----------------- Responsivo ----------------- */
+@media (max-width: 768px) {
+  #categorias {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem; /* espacio uniforme en móvil */
+  }
+}
 
 /* Tarjeta Producto */
 #galeria > div {
@@ -344,28 +391,35 @@ body {
   font-size: 1.2rem;
 }
 
+/* === BOTÓN CARRITO FLOTANTE === */
 #btn-carrito {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1100;
-  background: #ec4899;
+  bottom: 25px;
+  right: 25px;
+  z-index: 50;
+  background-color: #ec4899; /* Rosa base */
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
+  padding: 14px 20px;
+  border-radius: 9999px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
 }
 
-#filtros {
-  transition: max-height 0.3s ease, opacity 0.3s ease;
+#btn-carrito:hover {
+  background-color: #db2777; /* Rosa más fuerte */
+  transform: scale(1.05);
 }
 
-#filtros.hidden {
-  max-height: 0;
-  opacity: 0;
-}
-
-#filtros.flex {
-  max-height: 500px; /* o lo que necesites */
-  opacity: 1;
+/* En móviles, que no tape el contenido */
+@media (max-width: 640px) {
+  #btn-carrito {
+    bottom: 15px;
+    right: 15px;
+    padding: 12px 16px;
+  }
 }

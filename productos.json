@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "nombre": "Cadena Acero Inoxidable",
+    "descripcion": "Cadena resistente con baño de oro de 18k, elegante y duradera.",
+    "precio": 25.00,
+    "categoria": "Acero Inoxidable",
+    "imagen": "imagenes/1.jpg"
+  },
+  {
+    "id": 2,
+    "nombre": "Dije Fantasía Fina Enchapado",
+    "descripcion": "Perfecta para regalo, dije en forma de corazón con acabado brillante.",
+    "precio": 28.50,
+    "categoria": "Fantasía Fina Enchapado",
+    "imagen": "imagenes/2.jpg"
+  },
+  {
+    "id": 3,
+    "nombre": "Pulsera ajustable de cuero",
+    "descripcion": "Pulsera elegante de cuero negro con detalles metálicos, ajustable a cualquier muñeca.",
+    "precio": 18.00,
+    "categoria": "Pulsera",
+    "imagen": "imagenes/3.jpg"
+  },
+  {
+    "id": 4,
+    "nombre": "Accesorio para cabello",
+    "descripcion": "Diseño artesanal con piedras semipreciosas de colores vibrantes.",
+    "precio": 22.00,
+    "categoria": "Accesorios/Cabello",
+    "imagen": "imagenes/4.jpg"
+  },
+  {
+    "id": 5,
+    "nombre": "Pulsera grabada",
+    "descripcion": "Ideal para regalo, grabado incluido con nombre o fecha especial.",
+    "precio": 12.00,
+    "categoria": "Pulsera",
+    "imagen": "imagenes/5.jpg"
+  },
+  {
+    "id": 6,
+    "nombre": "Collar chapa metálica",
+    "descripcion": "Chapa metálica con grabado floral delicado, perfecta para accesorios únicos.",
+    "precio": 14.00,
+    "categoria": "Collares",
+    "imagen": "imagenes/6.jpg"
+  },
+  {
+    "id": 7,
+    "nombre": "Artesanal",
+    "descripcion": "Producto artesanal único, hecho a mano con detalles especiales.",
+    "precio": 16.00,
+    "categoria": "Artesanal",
+    "imagen": "imagenes/7.jpg"
+  },
+  {
+    "id": 8,
+    "nombre": "Joyero pequeño",
+    "descripcion": "Joyero compacto para guardar tus accesorios favoritos.",
+    "precio": 20.00,
+    "categoria": "Joyeros",
+    "imagen": "imagenes/8.jpg"
+  },
+  {
+    "id": 9,
+    "nombre": "Otros accesorios",
+    "descripcion": "Accesorios variados para complementar tu estilo.",
+    "precio": 10.00,
+    "categoria": "Otros",
+    "imagen": "imagenes/9.jpg"
+  }
+]

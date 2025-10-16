@@ -283,35 +283,61 @@ lightbox.addEventListener("touchend", e => {
 
 // ----------------- Filtros dinámicos -----------------
 function generarFiltros(productos) {
-  let contenedor = document.querySelector("section.flex");
+  const contenedor = document.querySelector("section.flex");
   if (!contenedor) return;
 
-  const categorias = ["Todos", ...new Set(productos.map(p => p.categoria))];
-  contenedor.innerHTML = categorias.map(cat =>
-    `<button class="categoria-btn bg-pink-100 hover:bg-pink-200 px-3 py-1 rounded-xl font-semibold transition duration-300 mr-2 mb-2" data-categoria="${cat}">${cat}</button>`
-  ).join("");
+  contenedor.innerHTML = "";
 
-  document.querySelectorAll(".categoria-btn").forEach(boton => {
-    boton.onclick = () => {
-      const categoria = boton.dataset.categoria;
-      const filtrados = categoria === "Todos"
-        ? productos
-        : productos.filter(p => p.categoria === categoria);
-      mostrarProductos(filtrados);
-    };
+  // Crear solo el botón "Accesorios"
+  const btnAccesorios = document.createElement("button");
+  btnAccesorios.className = "categoria-btn bg-pink-200 hover:bg-pink-300 px-3 py-1 rounded-xl font-semibold transition duration-300 mr-2 mb-2";
+  btnAccesorios.textContent = "Accesorios ▾";
+  contenedor.appendChild(btnAccesorios);
+
+  let filtrosMostrados = false;
+  let botonesCategorias = [];
+
+  btnAccesorios.addEventListener("click", () => {
+    if (!filtrosMostrados) {
+      // Generar botones de categorías si no se han creado
+      if (botonesCategorias.length === 0) {
+        const categorias = ["Todos", ...new Set(productos.map(p => p.categoria))];
+
+        categorias.forEach(cat => {
+          const boton = document.createElement("button");
+          boton.className = "categoria-btn bg-pink-100 hover:bg-pink-200 px-3 py-1 rounded-xl font-semibold transition duration-300 mr-2 mb-2";
+          boton.dataset.categoria = cat;
+          boton.textContent = cat;
+
+          // Evento de filtrado
+          boton.addEventListener("click", () => {
+            const filtrados = cat === "Todos"
+              ? productos
+              : productos.filter(p => p.categoria === cat);
+            mostrarProductos(filtrados);
+          });
+
+          contenedor.appendChild(boton);
+          botonesCategorias.push(boton);
+        });
+      }
+
+      // Mostrar los botones
+      botonesCategorias.forEach(b => b.style.display = "inline-block");
+      btnAccesorios.textContent = "Accesorios ▲";
+      filtrosMostrados = true;
+    } else {
+      // Ocultar los botones
+      botonesCategorias.forEach(b => b.style.display = "none");
+      btnAccesorios.textContent = "Accesorios ▾";
+      filtrosMostrados = false;
+    }
   });
+
+  // Inicialmente ocultar botones (excepto Accesorios)
+  filtrosMostrados = false;
 }
 
-// --- Menú hamburguesa para categorías ---
-document.addEventListener("DOMContentLoaded", () => {
-  const btnMenu = document.getElementById("btnMenuCategorias");
-  const filtros = document.getElementById("filtros");
-
-  btnMenu.addEventListener("click", () => {
-    filtros.classList.toggle("hidden");
-    filtros.classList.toggle("flex");
-  });
-});
 
 // ----------------- Ejecutar -----------------
 cargarProductos();

@@ -60,7 +60,6 @@ async function cargarProductos() {
 function mostrarProductos(lista) {
   galeria.innerHTML = "";
 
-  // Limpiar clases anteriores
   galeria.className = "";
 
   if (!lista.length) {
@@ -84,10 +83,10 @@ function mostrarProductos(lista) {
       <img src="${p.imagen}" alt="${p.nombre}" class="w-full h-auto object-contain rounded-2xl mb-3 cursor-pointer">
       <h3 class="text-xl font-bold text-pink-600 mb-1">${p.nombre}</h3>
       <p class="text-gray-600 text-sm mb-2">${p.descripcion}</p>
-      <p class="text-green-700 font-semibold mb-3">$${p.precio.toFixed(2)} USD</p>
+      <p class="text-green-700 font-semibold mb-3">C$${p.precio.toFixed(2)}</p>
       <div class="flex gap-2 w-full">
         <button data-index="${index}" class="add-carrito bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-xl flex-1">Añadir 🛒</button>
-        <a href="https://wa.me/${numeroWhatsApp}?text=Hola! Estoy interesado en el producto: ${encodeURIComponent(p.nombre)}"
+        <a href="https://wa.me/${numeroWhatsApp}?text=Hola! Estoy interesado en el producto: ${encodeURIComponent(p.nombre + ' C$' + p.precio.toFixed(2))}"
            target="_blank"
            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl flex-1 text-center">WhatsApp</a>
       </div>
@@ -95,7 +94,6 @@ function mostrarProductos(lista) {
     galeria.appendChild(card);
   });
 
-  // ----------------- Evento carrito -----------------
   galeria.querySelectorAll(".add-carrito").forEach(btn => {
     btn.onclick = () => {
       const index = btn.dataset.index;
@@ -143,7 +141,7 @@ function actualizarCarritoUI() {
         <img src="${p.imagen}" class="w-12 h-12 object-contain rounded" />
         <div>
           <p class="font-semibold">${p.nombre}</p>
-          <p class="text-sm text-gray-600">$${p.precio.toFixed(2)}</p>
+          <p class="text-sm text-gray-600">C$${p.precio.toFixed(2)}</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
@@ -161,23 +159,36 @@ function actualizarCarritoUI() {
     carritoItems.appendChild(item);
   });
 
-  carritoTotal.textContent = `$${total.toFixed(2)}`;
+  carritoTotal.textContent = `C$${total.toFixed(2)}`;
 
-  // Actualizar link WhatsApp
-  if (carrito.length) {
+  // ----------------- Botón WhatsApp -----------------
+  if (carrito.length > 0) {
+    btnWhatsapp.classList.remove("opacity-50", "cursor-not-allowed");
+    btnWhatsapp.removeAttribute("disabled");
+
     let mensaje = "Hola! Quiero hacer un pedido:\n";
     carrito.forEach(p => {
-      mensaje += `- ${p.nombre} x${p.cantidad}: $${(p.precio * p.cantidad).toFixed(2)} USD\n`;
+      mensaje += `- ${p.nombre} x${p.cantidad}: C$${(p.precio * p.cantidad).toFixed(2)}\n`;
     });
-    mensaje += `Total: $${total.toFixed(2)} USD`;
+    mensaje += `Total: C$${total.toFixed(2)}`;
+
     btnWhatsapp.href = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
   } else {
+    btnWhatsapp.classList.add("opacity-50", "cursor-not-allowed");
+    btnWhatsapp.setAttribute("disabled", true);
     btnWhatsapp.href = "#";
   }
 }
 
+// ----------------- Evento click WhatsApp -----------------
+btnWhatsapp.addEventListener("click", (e) => {
+  if (carrito.length === 0) {
+    e.preventDefault();
+    mostrarToast("Debe agregar al carrito antes de enviar el pedido");
+  }
+});
+
 // ----------------- Panel carrito -----------------
-// Abrir carrito
 btnCarrito.addEventListener("click", () => {
   carritoPanel.classList.add("flex");
   setTimeout(() => {
@@ -185,14 +196,12 @@ btnCarrito.addEventListener("click", () => {
   }, 10);
 });
 
-// Cerrar carrito
 btnCerrarCarrito.addEventListener("click", () => {
   carritoPanel.classList.add("opacity-0");
   setTimeout(() => {
     carritoPanel.classList.remove("flex");
   }, 300);
 });
-
 
 // ----------------- Lightbox -----------------
 function abrirLightbox(indice) {
@@ -217,38 +226,50 @@ function productoAnterior() {
   lightboxImg.src = productos[indiceActual].imagen;
 }
 
-// Abrir lightbox al hacer click en imagen
+// Abrir lightbox al hacer click en la imagen
 galeria.addEventListener("click", (e) => {
-  if (e.target.tagName === "IMG") {
-    const clickedSrc = e.target.getAttribute("src");
-    const indice = productos.findIndex(p => p.imagen === clickedSrc);
-    if (indice !== -1) abrirLightbox(indice);
-  }
+  const img = e.target.closest("img"); // detecta la imagen aunque sea dentro de div
+  if (!img) return;
+
+  const clickedSrc = img.getAttribute("src");
+  const indice = productos.findIndex(p => p.imagen === clickedSrc);
+  if (indice !== -1) abrirLightbox(indice);
 });
 
-// ----------------- Zoom Lightbox -----------------
+// ----------------- Zoom y arrastre -----------------
 let scale = 1;
 let isDragging = false;
-let startX, startY;
+let startX = 0, startY = 0;
 let translateX = 0, translateY = 0;
+
+function aplicarTransform() {
+  lightboxImg.style.transform = `scale(${scale}) translate(${translateX / scale}px, ${translateY / scale}px)`;
+}
 
 lightboxImg.addEventListener("wheel", e => {
   e.preventDefault();
   scale += e.deltaY < 0 ? 0.1 : -0.1;
   scale = Math.min(Math.max(1, scale), 3);
-  lightboxImg.style.transform = `scale(${scale}) translate(${translateX/scale}px, ${translateY/scale}px)`;
+  aplicarTransform();
 });
 
 function resetZoom() {
   scale = 1;
   translateX = 0;
   translateY = 0;
-  lightboxImg.style.transform = "scale(1)";
+  aplicarTransform();
 }
 
+// Cerrar lightbox
 lightboxClose.addEventListener("click", () => { resetZoom(); cerrarLightbox(); });
-lightbox.addEventListener("click", e => { if (e.target === lightbox) { resetZoom(); cerrarLightbox(); } });
+lightbox.addEventListener("click", e => { 
+  if (e.target === lightbox) { 
+    resetZoom(); 
+    cerrarLightbox(); 
+  } 
+});
 
+// Drag
 lightboxImg.addEventListener("mousedown", e => {
   if (scale <= 1) return;
   isDragging = true;
@@ -256,24 +277,25 @@ lightboxImg.addEventListener("mousedown", e => {
   startY = e.clientY - translateY;
   lightboxImg.style.cursor = "grabbing";
 });
+
 window.addEventListener("mousemove", e => {
   if (!isDragging) return;
   translateX = e.clientX - startX;
   translateY = e.clientY - startY;
-  lightboxImg.style.transform = `scale(${scale}) translate(${translateX/scale}px, ${translateY/scale}px)`;
+  aplicarTransform();
 });
+
 window.addEventListener("mouseup", () => {
   isDragging = false;
   lightboxImg.style.cursor = "grab";
 });
 
-// Lightbox botones
+// Botones next/prev
 nextBtn.addEventListener("click", siguienteProducto);
 prevBtn.addEventListener("click", productoAnterior);
 
 // Swipe móvil
-let touchStartX = 0;
-let touchEndX = 0;
+let touchStartX = 0, touchEndX = 0;
 lightbox.addEventListener("touchstart", e => touchStartX = e.changedTouches[0].screenX);
 lightbox.addEventListener("touchend", e => {
   touchEndX = e.changedTouches[0].screenX;
@@ -288,7 +310,6 @@ function generarFiltros(productos) {
 
   contenedor.innerHTML = "";
 
-  // Crear solo el botón "Accesorios"
   const btnAccesorios = document.createElement("button");
   btnAccesorios.className = "categoria-btn bg-pink-200 hover:bg-pink-300 px-3 py-1 rounded-xl font-semibold transition duration-300 mr-2 mb-2";
   btnAccesorios.textContent = "Accesorios ▾";
@@ -299,45 +320,33 @@ function generarFiltros(productos) {
 
   btnAccesorios.addEventListener("click", () => {
     if (!filtrosMostrados) {
-      // Generar botones de categorías si no se han creado
       if (botonesCategorias.length === 0) {
         const categorias = ["Todos", ...new Set(productos.map(p => p.categoria))];
-
         categorias.forEach(cat => {
           const boton = document.createElement("button");
           boton.className = "categoria-btn bg-pink-100 hover:bg-pink-200 px-3 py-1 rounded-xl font-semibold transition duration-300 mr-2 mb-2";
           boton.dataset.categoria = cat;
           boton.textContent = cat;
-
-          // Evento de filtrado
           boton.addEventListener("click", () => {
             const filtrados = cat === "Todos"
               ? productos
               : productos.filter(p => p.categoria === cat);
             mostrarProductos(filtrados);
           });
-
           contenedor.appendChild(boton);
           botonesCategorias.push(boton);
         });
       }
-
-      // Mostrar los botones
       botonesCategorias.forEach(b => b.style.display = "inline-block");
       btnAccesorios.textContent = "Accesorios ▲";
       filtrosMostrados = true;
     } else {
-      // Ocultar los botones
       botonesCategorias.forEach(b => b.style.display = "none");
       btnAccesorios.textContent = "Accesorios ▾";
       filtrosMostrados = false;
     }
   });
-
-  // Inicialmente ocultar botones (excepto Accesorios)
-  filtrosMostrados = false;
 }
-
 
 // ----------------- Ejecutar -----------------
 cargarProductos();

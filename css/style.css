@@ -314,3 +314,58 @@ body {
     height: auto;
   }
 }
+
+/* Carrito deslizante */
+#carrito-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  max-width: 90%;
+  height: 100%;
+  background: white;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+  z-index: 1000;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  flex-direction: column;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+#carrito-panel.flex {
+  transform: translateX(0);
+}
+
+#carrito-panel .cerrar {
+  align-self: flex-end;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+#btn-carrito {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1100;
+  background: #ec4899;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+#filtros {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+#filtros.hidden {
+  max-height: 0;
+  opacity: 0;
+}
+
+#filtros.flex {
+  max-height: 500px; /* o lo que necesites */
+  opacity: 1;
+}

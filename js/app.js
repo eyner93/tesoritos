@@ -177,22 +177,22 @@ function actualizarCarritoUI() {
 }
 
 // ----------------- Panel carrito -----------------
+// Abrir carrito
 btnCarrito.addEventListener("click", () => {
-  carritoPanel.classList.remove("hidden");
+  carritoPanel.classList.add("flex");
   setTimeout(() => {
-    carritoPanel.classList.add("flex");
     carritoPanel.classList.remove("opacity-0");
   }, 10);
 });
 
+// Cerrar carrito
 btnCerrarCarrito.addEventListener("click", () => {
   carritoPanel.classList.add("opacity-0");
   setTimeout(() => {
-    carritoPanel.classList.add("hidden");
     carritoPanel.classList.remove("flex");
-    carritoPanel.classList.remove("opacity-0");
   }, 300);
 });
+
 
 // ----------------- Lightbox -----------------
 function abrirLightbox(indice) {
@@ -301,6 +301,17 @@ function generarFiltros(productos) {
     };
   });
 }
+
+// --- Menú hamburguesa para categorías ---
+document.addEventListener("DOMContentLoaded", () => {
+  const btnMenu = document.getElementById("btnMenuCategorias");
+  const filtros = document.getElementById("filtros");
+
+  btnMenu.addEventListener("click", () => {
+    filtros.classList.toggle("hidden");
+    filtros.classList.toggle("flex");
+  });
+});
 
 // ----------------- Ejecutar -----------------
 cargarProductos();
